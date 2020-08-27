@@ -1,0 +1,47 @@
+# -*-coding:utf-8 -*-
+
+import serial
+
+
+class DeviceBase:
+    """
+    所有串口设备的基类,包含了串口的参数信息,以及一些基本的串口操作函数
+    """
+
+    def __init__(
+            self,
+            detectBytes,
+            response_length,
+            baudRate,
+            dataBits,
+            stopBits,
+            parity=serial.PARITY_NONE,
+            portName="",
+    ):
+        """
+        构造函数
+        :param detectBytes: 向设备发送的命令字节
+        :param response_length: 设备应该回应的字节长度，常量
+        :param baudRate: 波特率设备应该回应的字节长度,常量
+        :param dataBits: 数据位
+        :param stopBits: 停止位
+        :param parity: 奇偶位
+        :param portName: 串口号
+        """
+        self._portName = portName
+        self._baudRate = baudRate
+        self._dataBits = dataBits
+        self._stopBits = stopBits
+        self._parity = parity
+        self._detectedPortName = None  # 检测到的串口名字存放在此处
+        self._detectCommandBytes = detectBytes  # 检测用到的命令字节流
+        self._responseBytesLength = response_length  # 泵端回应的数据长度,根据协议,此长度应该固定
+
+    def open(self):
+        pass
+
+    def close(self):
+        pass
+
+    def is_open(self):
+        pass

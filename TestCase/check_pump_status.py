@@ -1,0 +1,28 @@
+# -*- coding: utf-8 -*-
+
+from TestCase import *
+
+
+def checkPumpStatus():
+    current_system_status = lvp.get_system_status()
+    if current_system_status == SystemStatus.EWaitPowerUpStatus:
+        print("The pump current system status is %s" % get_system_status_string(current_system_status))
+    elif current_system_status == SystemStatus.EPostStatus:
+        print("The pump current system status is %s" % get_system_status_string(current_system_status))
+    elif current_system_status == SystemStatus.EStopStatus:
+        print("The pump current system status is %s" % get_system_status_string(current_system_status))
+    elif current_system_status == SystemStatus.EPauseStatus:
+        print("The pump current system status is %s" % get_system_status_string(current_system_status))
+    elif current_system_status == SystemStatus.ERunStatus:
+        print("The pump current system status is %s" % get_system_status_string(current_system_status))
+        lvp.stop_infusion()
+        system_status = lvp.get_system_status()
+        assert system_status == SystemStatus.EStopStatus
+    elif current_system_status == SystemStatus.EPowerOffStatus:
+        print("The pump current system status is %s" % get_system_status_string(current_system_status))
+    elif current_system_status == SystemStatus.ENoneStatus:
+        print("The pump current system status is %s" % get_system_status_string(current_system_status))
+    else:
+        print("Unknown System Status!")
+        return
+

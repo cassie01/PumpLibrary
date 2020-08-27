@@ -1,0 +1,6 @@
+[
+  "ClinicScenario/test_clinic_scenario_part1.py::TestClinicScenarioPart1::test_clinic_scenario_part1",
+  "ClinicScenario/test_clinic_scenario_part2.py::TestClinicScenarioPart2::test_clinic_scenario_part2",
+  "FreeTest/test_task.py::test_part1",
+  "FreeTest/test_free_test.py::TestFreeTest::test_part1"
+]

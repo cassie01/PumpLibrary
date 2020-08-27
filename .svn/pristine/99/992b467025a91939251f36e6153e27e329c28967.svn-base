@@ -1,0 +1,130 @@
+# -*-coding:utf-8 -*-
+
+# lvp_project_path = 'C:/Users/MSHALWang/Desktop/Workspace/C9LVPProject/PumpLibrary/'
+lvp_project_path = 'C:/Users/MSHALWang/Desktop/Workspace/C9LVPProject/-05- LVP Python Project/PumpLibrary/'
+lvp_project_dll_path = r'C:/Users/MSHALWang/Desktop/Workspace/C9LVPProject/-05- LVP Python Project/PumpLibrary/ParserProtocol/ProtocolParser_x64.dll'
+
+
+# global commandFormat
+global command_format
+
+
+def setCommandFormat(conn):
+    # global commandFormat
+    global command_format
+    # commandFormat = conn
+    command_format = conn
+    # return commandFormat
+    return command_format
+
+
+def getCommandFormat():
+    global commandFormat
+    return commandFormat
+
+
+# def alarm_matrix():
+#     alarm = {
+#         0: "",
+#         1: "Rate Out Of Range",
+#         2: "Parameter Not Set",
+#         2: "Parameter Not Set",
+#         3: "Invalid Time",
+#         4: "VTBI Out of Range",
+#         5: "Time out of range",
+#         6: "Rate Out Of Range",
+#         7: "Priming Reach Max",
+#         8: "Battery Temp. Abnormal",
+#         9: "Tube Not Calibrated",
+#         10: "Pressure Sensor Not Calibrated",
+#         11: "Dose Out Of Range",
+#         12: "Concentration Out Of Range",
+#         13: "Secondary Infusion Completed",
+#         14: "Low Battery",
+#         15: "Drip Sensor Fall",
+#         16: "System Idle",
+#         17: "Infusion Near Complete",
+#         18: "Standby time End",
+#         19: "Battery Depleted",
+#         20: "Occlusion",
+#         21: "Over Air",
+#         22: "Infusion Completed",
+#         23: "Secondary Infusion Completed",
+#         24: "Door Opened",
+#         25: "Tube Not install",
+#         26: "Drip sensor rate error",
+#         27: "Drip sensor data lost",
+#         28: "System Error 01",
+#         29: "System Error 02",
+#         30: "System Error 03",
+#         31: "System Error 04",
+#         32: "System Error 05",
+#         33: "System Error 06",
+#         34: "System Error 07",
+#         35: "System Error 08",
+#         36: "System Error 09",
+#         37: "System Error 10",
+#         38: "System Error 11",
+#         39: "System Error 12",
+#         40: "System Error 13",
+#         41: "System Error 14",
+#         42: "System Error 15",
+#         43: "System Error 16",
+#         44: "Main FCT Not Test",
+#         45: "UI FCT Not Test",
+#         46: "System Error 19",
+#     }
+#     return alarm
+
+def alarm_matrix():
+    alarm = {
+        0: "",
+        1: "Rate Out Of Range",
+        2: "CapacityVolume Out Of Range",
+        3: "Parameter Not Set",
+        4: "Invalid Time",
+        5: "VTBI Out of Range",
+        6: "Time out of range",
+        7: "Rate Out Of Range",
+        8: "Priming Reach Max",
+        9: "Battery Temp. Abnormal",
+        10: "Tube Not Calibrated",
+        11: "Pressure Sensor Not Calibrated",
+        12: "Dose Out Of Range",
+        13: "Concentration Out Of Range",
+        14: "Secondary Infusion Completed",
+        15: "Low Battery",
+        16: "Drip Sensor Fall",
+        17: "System Idle",
+        18: "Infusion Near Complete",
+        19: "Standby time End",
+        20: "Battery Depleted",
+        21: "Occlusion",
+        22: "Over Air",
+        23: "Infusion Completed",
+        24: "Secondary Infusion Completed",
+        25: "Door Opened",
+        26: "Tube Not install",
+        27: "Drip sensor rate error",
+        28: "Drip sensor data lost",
+        29: "System Error 01",
+        30: "System Error 02",
+        31: "System Error 03",
+        32: "System Error 04",
+        33: "System Error 05",
+        34: "System Error 06",
+        35: "System Error 07",
+        36: "System Error 08",
+        37: "System Error 09",
+        38: "System Error 10",
+        39: "System Error 11",
+        40: "System Error 12",
+        41: "System Error 13",
+        42: "System Error 14",
+        43: "System Error 15",
+        44: "System Error 16",
+        45: "Main FCT Not Test",
+        46: "UI FCT Not Test",
+        47: "System Error 19",
+    }
+    return alarm

@@ -1,0 +1,45 @@
+# -*-coding:utf-8 -*-
+
+from SerialDevice.connect_object import *
+
+"""
+This class is used to connect with Pump.
+Including:
+- connect
+- connect_close
+"""
+
+
+class PumpConnect():
+
+    # 在此处定义以何种方式连接何种泵
+    def __init__(self, func, connect_way):
+        self.connectObj = dic_Pump[func](connect_way)
+
+    # 检测并打开串口,由于LVP目前通讯协议未定,因此先略过
+    # 同时对于COM,IO,Ethernet后续还要分别定义不同的连接
+    def connect(self):
+        # 1.检测所有串口
+        self.connectObj.detect_port()
+        # print(com)
+        # # 2.获取泵的端口号
+        # com2 = self.connectObj._get_port_name()
+        # print("检测端口号为:{}".format(com2))
+        # 3.连接端口,后续等LVP协议完成后替换
+        # try_count = 5
+        # while self.port is None and try_count > 0:
+        #     time.sleep(1)
+        #     try_count = try_count - 1
+        #     print(try_count)
+        # if self.port is None:
+        #     print("未检测到串口")
+        #     return
+        # else:
+        #     print("检测到串口", self.port)
+        # 返回连接对象
+
+        return self.connectObj
+
+    # 关闭串口对象
+    def connect_close(self):
+        self.connectObj.close()

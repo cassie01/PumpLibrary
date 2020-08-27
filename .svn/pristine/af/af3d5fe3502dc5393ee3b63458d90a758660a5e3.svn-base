@@ -1,0 +1,47 @@
+import logging
+from logging import handlers
+import os
+
+from global_attributes import lvp_project_path
+
+
+class Logger(object):
+    level_relations = {
+        'debug': logging.DEBUG,
+        'info': logging.INFO,
+        'warning': logging.WARNING,
+        'error': logging.ERROR,
+        'crit': logging.CRITICAL
+    }  # Log level relationship mapping
+
+    def __init__(self, filename, level='info', when='D', backCount=3,
+                 fmt='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'):
+        self.logger = logging.getLogger(filename)
+        format_str = logging.Formatter(fmt)  # Format log
+        self.logger.setLevel(self.level_relations.get(level))  # Set log level
+        sh = logging.StreamHandler()  # Output to screen
+        sh.setFormatter(format_str)  # Format the display on the screen
+        th = handlers.TimedRotatingFileHandler(filename=filename, when=when, backupCount=backCount,
+                                               encoding='utf-8')  # Write to file the processor that automatically generates the file at a specified interval
+        # instantiate TimedRotatingFileHandler
+        # interval is time duration，backupCount is number of backup files，If it exceeds this number, it will be deleted automatically，When is the time unit of the interval, and the units are as follows:
+        # S second、
+        # M minute、
+        # H hour、
+        # D day、
+        # W every week (interval = = 0 for Monday)
+        # midnight
+        th.setFormatter(format_str)  # Set the format written in the file
+        self.logger.addHandler(sh)  # Add object to logger
+        self.logger.addHandler(th)
+
+
+if __name__ == '__main__':
+    pass
+    # log = Logger('./TestLog/all.log', level='debug')
+    # log.logger.debug('debug')
+    # log.logger.info('info')
+    # log.logger.warning('warning')
+    # log.logger.error('error')
+    # log.logger.critical('critical')
+    # Logger('./TestLog/error.log', level='error').logger.error('error')

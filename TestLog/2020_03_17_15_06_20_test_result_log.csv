@@ -1,0 +1,69 @@
+F SmokeTest/test_SmokeTest_part_001.py::TestSmokeTest::test_smoke_test[1-3]
+ self = <TestCase.SmokeTest.test_SmokeTest_part_001.TestSmokeTest object at 0x00000284F05EDC18>
+ 
+     def test_smoke_test(self):
+         """
+     
+         :return:
+         """
+     
+         """
+! C:\Python36\lib\encodings\cp1252.py
+ Traceback (most recent call last):
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\_pytest\main.py", line 197, in wrap_session
+     session.exitstatus = doit(config, session) or 0
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\_pytest\main.py", line 247, in _main
+     config.hook.pytest_runtestloop(session=session)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\hooks.py", line 286, in __call__
+     return self._hookexec(self, self.get_hookimpls(), kwargs)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\manager.py", line 93, in _hookexec
+     return self._inner_hookexec(hook, methods, kwargs)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\manager.py", line 87, in <lambda>
+     firstresult=hook.spec.opts.get("firstresult") if hook.spec else False,
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\callers.py", line 208, in _multicall
+     return outcome.get_result()
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\callers.py", line 80, in get_result
+     raise ex[1].with_traceback(ex[2])
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\callers.py", line 187, in _multicall
+     res = hook_impl.function(*args)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\_pytest\main.py", line 271, in pytest_runtestloop
+     item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\hooks.py", line 286, in __call__
+     return self._hookexec(self, self.get_hookimpls(), kwargs)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\manager.py", line 93, in _hookexec
+     return self._inner_hookexec(hook, methods, kwargs)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\manager.py", line 87, in <lambda>
+     firstresult=hook.spec.opts.get("firstresult") if hook.spec else False,
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\callers.py", line 208, in _multicall
+     return outcome.get_result()
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\callers.py", line 80, in get_result
+     raise ex[1].with_traceback(ex[2])
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\callers.py", line 187, in _multicall
+     res = hook_impl.function(*args)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\_pytest\runner.py", line 84, in pytest_runtest_protocol
+     runtestprotocol(item, nextitem=nextitem)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\_pytest\runner.py", line 99, in runtestprotocol
+     reports.append(call_and_report(item, "call", log))
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\_pytest\runner.py", line 189, in call_and_report
+     hook.pytest_runtest_logreport(report=report)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\hooks.py", line 286, in __call__
+     return self._hookexec(self, self.get_hookimpls(), kwargs)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\manager.py", line 93, in _hookexec
+     return self._inner_hookexec(hook, methods, kwargs)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\manager.py", line 87, in <lambda>
+     firstresult=hook.spec.opts.get("firstresult") if hook.spec else False,
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\callers.py", line 208, in _multicall
+     return outcome.get_result()
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\callers.py", line 80, in get_result
+     raise ex[1].with_traceback(ex[2])
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\pluggy\callers.py", line 187, in _multicall
+     res = hook_impl.function(*args)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\_pytest\resultlog.py", line 79, in pytest_runtest_logreport
+     self.log_outcome(report, code, longrepr)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\_pytest\resultlog.py", line 60, in log_outcome
+     self.write_log_entry(testpath, lettercode, longrepr)
+   File "C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\venv\lib\site-packages\_pytest\resultlog.py", line 54, in write_log_entry
+     print(" %s" % line, file=self.logfile)
+   File "C:\Python36\lib\encodings\cp1252.py", line 19, in encode
+     return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+ UnicodeEncodeError: 'charmap' codec can't encode characters in position 17-20: character maps to <undefined>

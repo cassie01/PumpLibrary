@@ -1,0 +1,19 @@
+# -*- coding: utf-8 -*-
+
+VERSION = '0.0.3'
+
+"""
+History Log:
+0.0.0: 
+First build version
+
+0.0.1: 
+Restructure the keyword commands.
+
+0.0.2:
+Encapsulate the commands.
+Provide string and hex commands.
+
+0.0.3:
+Use GPA Protocol to send commands for pump.
+"""

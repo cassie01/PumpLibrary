@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="3c2f6d6b-44c5-4774-b9a2-6f3f1e080add" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_001.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_002.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_003.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_004.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_005.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_006.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_007.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_008.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_009.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_010.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_011.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_012.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_013.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_014.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_015.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_016.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_017.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/MantisIssue" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/TestCase/MantisIssue/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/MantisIssue/mantis0002848.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/aaa.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/main_entrance.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestCase/run_all_test_cases.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestLog/test_process_log.csv.2020-03-13" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestReport/2020_03_15_19_25_36_test_result_report.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestReport/2020_03_15_19_26_31_test_result_report.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TestReport/2020_03_15_19_26_52_test_result_report.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/UserGuide/AutoTestProtocol.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/PumpLibrary.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PumpLibrary.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ParserProtocol/struct_define.py" beforeDir="false" afterPath="$PROJECT_DIR$/ParserProtocol/struct_define.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SerialDevice/com_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/SerialDevice/com_base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestCase/.pytest_cache/v/cache/lastfailed" beforeDir="false" afterPath="$PROJECT_DIR$/TestCase/.pytest_cache/v/cache/lastfailed" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestCase/.pytest_cache/v/cache/nodeids" beforeDir="false" afterPath="$PROJECT_DIR$/TestCase/.pytest_cache/v/cache/nodeids" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestCase/ClinicScenario/test_clinic_scenario_part1.py" beforeDir="false" afterPath="$PROJECT_DIR$/TestCase/ClinicScenario/test_ClinicScenario_part_001.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestCase/ClinicScenario/test_clinic_scenario_part2.py" beforeDir="false" afterPath="$PROJECT_DIR$/TestCase/ClinicScenario/test_ClinicScenario_part_002.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestCase/SmokeTest/test_smoke_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/TestCase/SmokeTest/test_SmokeTest_part_001.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestCase/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/TestCase/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestCase/check_pump_status.py" beforeDir="false" afterPath="$PROJECT_DIR$/TestCase/check_pump_status.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestLog/commands_log.csv" beforeDir="false" afterPath="$PROJECT_DIR$/TestLog/commands_log.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TestLog/test_process_log.csv" beforeDir="false" afterPath="$PROJECT_DIR$/TestLog/test_process_log.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserGuide/AutomationGuide.docx" beforeDir="false" afterPath="$PROJECT_DIR$/UserGuide/AutomationGuide.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserGuide/PumpLibrary Framework Status.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/UserGuide/PumpLibraryFrameworkStatus.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserGuide/PythonNamingRule.txt" beforeDir="false" afterPath="$PROJECT_DIR$/UserGuide/Python3NamingRule.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/global_attributes.py" beforeDir="false" afterPath="$PROJECT_DIR$/global_attributes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pump_library.py" beforeDir="false" afterPath="$PROJECT_DIR$/pump_library.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/_pytest/hookspec.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/_pytest/hookspec.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/version.py" beforeDir="false" afterPath="$PROJECT_DIR$/version.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1YtUQMfjDy4syGfKvKbxVA2Q1dR" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\TestCase\SmokeTest" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\TestCase" />
+      <recent name="C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\TestCase\FreeTest" />
+      <recent name="C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\UserGuide" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.check_pump_alarm">
+    <configuration name="check_pump_alarm" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="PumpLibrary" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/TestCase" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TestCase/check_pump_alarm.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pump_library" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="PumpLibrary" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pump_library.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="run_all_test_cases" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="PumpLibrary" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/TestCase" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TestCase/run_all_test_cases.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test_case" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="PumpLibrary" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/TestCase" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/TestCase/test_case.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unittests in test_FreeTest_part_007.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <module name="PumpLibrary" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/TestCase/FreeTest" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/TestCase/FreeTest/test_FreeTest_part_007.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.check_pump_alarm" />
+        <item itemvalue="Python.check_pump_alarm" />
+        <item itemvalue="Python.check_pump_alarm" />
+        <item itemvalue="Python.check_pump_alarm" />
+        <item itemvalue="Python.check_pump_alarm" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\mshacxiang\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3c2f6d6b-44c5-4774-b9a2-6f3f1e080add" name="Default Changelist" comment="" />
+      <created>1583761366164</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1583761366164</updated>
+      <workItem from="1585037562926" duration="1621000" />
+      <workItem from="1585039572400" duration="4099000" />
+      <workItem from="1595814372220" duration="41000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="LAST_COMMIT_MESSAGE" value="" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="382" y="164" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1598505915549">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="382" y="164" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1366.728/-1920.-311.1920.1040@0.0.1366.728" timestamp="1598505915549" />
+    <state x="-1280" y="32" key="com.intellij.ide.util.TipDialog" timestamp="1595814372242">
+      <screen x="-1920" y="-311" width="1920" height="1040" />
+    </state>
+    <state x="-1280" y="32" key="com.intellij.ide.util.TipDialog/0.0.1366.728/-1920.-311.1920.1040@-1920.-311.1920.1040" timestamp="1595814372242" />
+  </component>
+</project>

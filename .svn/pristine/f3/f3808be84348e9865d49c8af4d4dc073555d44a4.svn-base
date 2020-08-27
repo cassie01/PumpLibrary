@@ -1,0 +1,55 @@
+import os
+import time
+import unittest
+
+from global_attributes import lvp_project_path
+from html_report_generator import HTMLTestRunner
+
+
+def discover():
+    '''Get the test case script that needs to be executed'''
+    suite = unittest.defaultTestLoader.discover(
+        start_dir=os.path.join(
+            os.path.dirname(__name__),
+            'ClinicScenario'),  # This is the directory of pending use cases
+        pattern='test_*.py',  # This is the rule that matches the script name
+        top_level_dir=None  # This is the name of the top-level directory, which is usually equal to None by default.
+    )
+    return suite
+
+
+def get_time():
+    '''Returns the current time format information'''
+    # now = time.strftime('%Y-%m-%d %H_%M_%S')  # Get the current time and format it as a string
+    now = time.strftime('%Y_%m_%d_%H_%M_%S')  # Get the current time and format it as a string
+    return now
+
+
+def go_runner():
+    '''Define test reports and execute test case scripts'''
+    # The os.path.join () function is used to concatenate file paths, which is commonly used in the mainstream.
+    # The method's internal code is perfectly encapsulated, as long as the correct two paths are passed in.
+    filename = os.path.join(
+        os.path.dirname(__name__),
+        'ClinicScenario',
+        lvp_project_path + "TestReport/" + get_time() + 'result.html')
+    fp = open(filename, 'wb')
+    runner = HTMLTestRunner(stream=fp,
+                            title='Automated test report',
+                            description='Test case execution details')
+    runner.run(discover())
+    fp.close()
+
+
+def come_runner():
+    report_name = lvp_project_path + "TestReport/" + get_time() + 'result.html'
+    # os.system("pytest --html={} --self-contained-html".format(report_name))
+    os.system("pytest --html={}".format(report_name))
+
+
+if __name__ == '__main__':
+    # go_runner()
+    come_runner()
+
+    # os.system("pytest --html=report.html")
+    # os.system("python ./test_clinic_scenario_part.py")

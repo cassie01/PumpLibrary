@@ -1,0 +1,14 @@
+import unittest
+from TestCase.main import *
+from global_attributes import lvp_project_path
+
+# When writing a test case, you must first execute the following codes: its role is to create a PumpLibrary object, establish a connection with the pump, set the command format, and set the product ID.
+lvp = PumpLibrary.main()
+
+from logging_handler import Logger
+
+# log = Logger('C:/Users/MSHALWang/Desktop/Workspace/C9LVPProject/PumpLibrary/TestLog/all.log',level='debug')
+# log = Logger(lvp_project_path + 'TestLog/all.log',level='debug')
+log = Logger(lvp_project_path + 'TestLog/all.log', level='debug')
+log_error = Logger(lvp_project_path + '/TestLog/error.log', level='error')
+# log_error = Logger('C:/Users/MSHALWang/Desktop/Workspace/C9LVPProject/PumpLibrary/TestLog/error.log', level='error')

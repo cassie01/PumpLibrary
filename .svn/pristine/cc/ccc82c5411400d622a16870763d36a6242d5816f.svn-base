@@ -1,0 +1,637 @@
+# -*-coding:utf-8 -*-
+
+import threading
+import sys, os, time
+from pubsub import pub
+
+sys.path.append(os.path.pardir)
+from logging_handler import WriteCSV
+from SerialDevice.device_base import *
+from ParserProtocol.struct_define import *
+from global_attributes import alarm_matrix, lvp_project_dll_path
+from ParserProtocol.protocol_invoker import ProtocolParserInvoker
+
+GLOBAL_RECEIVE_BUFFER = bytearray()  # serial receive buffer
+GLOBAL_RECEIVE_BUFFER_LOCK = threading.Lock()  # serial receive buffer lock
+
+
+class COMBase(DeviceBase):
+    COMMAND_TIMEOUT = 1500  # unit：ms
+
+    def __init__(self, judge):
+        DeviceBase.__init__(self, judge, 22, 115200, 8, 1)
+        pub.subscribe(self.get_port_name, "detect_port_name")
+        self.serial_com_list = []
+        self.serialobject = None
+        self.keep = True
+        self.flag = False
+        self.signal = threading.Semaphore(0)
+        self.keeping = True
+        self.parser_invoker = ProtocolParserInvoker(lvp_project_dll_path)
+        # self.serial_com = SerialCom(port, baudrate, databits, parity, stopbits)
+        self.alarm_id = []
+
+    # Judge the port
+    def open(self):
+        if not self.is_open():
+            try:
+                self.serialobject.open()
+            except serial.SerialException as ex:
+                print("SerialException ", ex.args[0])
+                return False
+            except Exception as e:
+                print("Exception ", e.args[0])
+                return False
+            return True
+        else:
+            return True
+
+    # Close the port
+    def close(self):
+        if self.is_open():
+            self.serialobject.close()
+
+    # Verify the port is whether open
+    def is_open(self):
+        if self.serialobject is None:
+            return False
+        return self.serialobject.isOpen()
+
+    # Detect port name
+    def detect_port(self):
+        import serial.tools.list_ports as list_ports
+        port_list = list(list_ports.comports())
+        if len(port_list) <= 0:
+            print("Port is not found!")
+            return
+        for obj in self.serial_com_list:
+            if obj.is_open():
+                obj.close()
+        self.serial_com_list.clear()
+        # Put detected port name in a list
+        port_names = [port_no for port_no, _, _ in port_list]
+        for port in port_names:
+            # com = SerialPortCommunication(port)
+            # com.set_detect_command(self._detectCommandBytes, self._responseBytesLength)
+            # self.serial_com_list.append(com)
+            print("The port name is %s" % port)
+            try:
+                self.serialobject = serial.Serial(
+                    port,
+                    baudrate=115200,
+                    bytesize=serial.EIGHTBITS,
+                    parity=serial.PARITY_NONE,
+                    stopbits=serial.STOPBITS_ONE,
+                    # timeout=5,
+                    # timeout=None,
+                    # xonxoff=None,
+                    # rtscts=None,
+                    # dsrdtr=False,
+                )
+                print("The serial port instance object is: %s " % self.serialobject)
+                break
+            except Exception as e:
+                print(e)
+                self.serialobject = None
+
+            # self.thread = threading.Thread(target=self.__on_receive)
+
+        # for obj in self.serial_com_list:
+        #     obj.start_receive()
+        #     obj.send(self._detectCommandBytes)
+        #
+        # time.sleep(3)
+        # for obj in self.serial_com_list:
+        #    obj.close()
+
+    def return_port_name(self):
+        return self._detectedPortName
+
+    def get_port_name(self, port_name):
+        print("get_port_name", port_name)
+        if port_name is not None and len(port_name) > 3:
+            self._detectedPortName = port_name
+            for obj in self.serial_com_list:
+                obj.close()
+
+    def __on_receive(self):
+        read_buffer_count = 0
+        while self.is_open():
+            if self.serialobject is None:
+                return
+            try:
+                read_buffer_count = self.serialobject.in_waiting
+            except Exception as e:
+                print("serialcom.py::__on_receive()->in_waiting Exception ", e.args[0])
+                return
+            if read_buffer_count > 0:
+                bts = None
+                try:
+                    bts = self.serialobject.read(read_buffer_count)
+                except Exception as ex:
+                    print("serialcom.py::__on_receive()->read Exception ", ex.args[0])
+                    return
+                GLOBAL_RECEIVE_BUFFER_LOCK.acquire()
+                for i in range(0, len(bts)):
+                    GLOBAL_RECEIVE_BUFFER.append(bts[i])
+                GLOBAL_RECEIVE_BUFFER_LOCK.release()
+                return GLOBAL_RECEIVE_BUFFER[0]
+            time.sleep(0.02)
+
+    def bytes_to_hex_string(self, buffer):
+        # hex_str = ''
+        # for item in bs:
+        #     hex_str += str(hex(item))[2:].zfill(2).upper() + " "
+        # return hex_str
+        return ''.join(['%02X ' % b for b in buffer])
+
+    def __get_now_string(self):
+        nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S ')
+        return nowTime
+
+    # Send and Receive command
+    def send_receive_command(self, command):
+
+        response_data = None
+
+        # Handle request command
+        try:
+            if self.serialobject is not None and self.is_open():
+                print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S '), "The byte data sent to the pump:")
+                print(self.bytes_to_hex_string(command))
+                request_data = self.bytes_to_hex_string(command)
+                sending_length = self.serialobject.write(command)
+                if sending_length == len(command):
+                    print("Sending command succeeded!")
+                else:
+                    print("Sending command failed!")
+                    raise Exception("command sent bytes length != command size")
+                we_request = WriteCSV(request_data, None)
+                we_request.request_write_csv()
+        except Exception as reason:
+            print("Sending Error: %s" % reason)
+
+        # Handle response command
+        try:
+            if self.serialobject is not None and self.is_open():
+                self.__on_receive()
+                time.sleep(0.3)
+                GLOBAL_RECEIVE_BUFFER_LOCK.acquire()
+                tembuffer = bytes(GLOBAL_RECEIVE_BUFFER)
+                command_id, copiedLength = self.parser_invoker.get_command_id(tembuffer, len(tembuffer))
+                if len(tembuffer) > 0:
+                    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S '), "The byte data returned by the pump:")
+                    print(self.bytes_to_hex_string(tembuffer))
+                    response_data = self.bytes_to_hex_string(tembuffer)
+                if copiedLength <= len(tembuffer):
+                    GLOBAL_RECEIVE_BUFFER.clear()
+                    for i in range(copiedLength, len(tembuffer)):
+                        GLOBAL_RECEIVE_BUFFER.append(tembuffer[i])
+                    if len(GLOBAL_RECEIVE_BUFFER) > 0:
+                        print("next command=", GLOBAL_RECEIVE_BUFFER)
+                GLOBAL_RECEIVE_BUFFER_LOCK.release()
+                if command_id < 0:
+                    print("Received data failed！")
+                    return
+                # elif command_id == 0:
+                #     print("productID")
+                #     return
+                enum_command_id = CommandID.convert_int_to_command_id(command_id)
+                if enum_command_id is None:
+                    print("Command_id is invalid!")
+                    return
+                elif enum_command_id is not None:
+                    cmd_struct = self.parser_invoker.get_command_data(enum_command_id)
+                    if cmd_struct is None:
+                        print("cmd_struct is None!")
+                        return
+
+                    elif isinstance(cmd_struct, GetInfusionMode):
+                        self.infusion_mode = cmd_struct.infusion_mode
+                        print(self.__get_now_string(), "GetInfusionMode Responsed")
+                        if self.infusion_mode == int(0x10):
+                            self.infusion_mode = "basic"
+                        elif self.infusion_mode == int(0x11):
+                            self.infusion_mode = "weight"
+                        elif self.infusion_mode == int(0x12):
+                            self.infusion_mode = "multirate"
+                        elif self.infusion_mode == int(0x13):
+                            self.infusion_mode = "taper"
+                        elif self.infusion_mode == int(0x14):
+                            self.infusion_mode = "step"
+                        elif self.infusion_mode == int(0x1A):
+                            self.infusion_mode = "basic_sec"
+                        elif self.infusion_mode == int(0x1B):
+                            self.infusion_mode = "weight_sec"
+                        else:
+                            print("Invalid parameter!")
+                            return
+                        return self.infusion_mode
+                    elif isinstance(cmd_struct, SetInfusionMode):
+                        print(self.__get_now_string(), "SetInfusionMode Responsed")
+
+                    elif isinstance(cmd_struct, SetInfusionParameter):
+                        print(self.__get_now_string(), "SetInfusionParameter Responsed")
+
+                    elif isinstance(cmd_struct, SetInfusingParameter):
+                        print(self.__get_now_string(), "SetInfusingParameter Responsed")
+
+                    elif isinstance(cmd_struct, RemoteStartStopInfusion):
+                        print(self.__get_now_string(), "RemoteStartStopInfusion Responsed")
+
+                    elif isinstance(cmd_struct, GetSystemStatus):
+                        self.pump_status = SystemStatus.convert_int_to_status(cmd_struct.pump_status)
+                        print(self.__get_now_string(), "GetSystemStatus Responsed",
+                              format(get_system_status_string(self.pump_status)))
+                        return self.pump_status
+
+                    elif isinstance(cmd_struct, GetKVO):
+                        self.KVO = cmd_struct.KVO
+                        print(self.__get_now_string(), "GetKVO Responsed")
+                        return self.KVO
+                    elif isinstance(cmd_struct, SetKVO):
+                        print(self.__get_now_string(), "SetKVO Responsed")
+
+                    elif isinstance(cmd_struct, RollbackVolume):
+                        print(self.__get_now_string(), "RollbackVolume Responsed")
+
+                    elif isinstance(cmd_struct, GetAlarmCount):
+                        self.alarm_count = cmd_struct.alarm_count
+                        print(self.__get_now_string(), "GetAlarmCount Responsed")
+                        return self.alarm_count
+
+                    elif isinstance(cmd_struct, GetBrand):
+                        self.brand = cmd_struct.brand
+                        if self.brand == 0:
+                            self.brand = "Weigao"
+                        elif self.brand == 1:
+                            self.brand = "Yusheng"
+                        elif self.brand == 2:
+                            self.brand = "Xinhua"
+                        elif self.brand == 3:
+                            self.brand = "B.Brand"
+                        elif self.brand == 0x80:
+                            self.brand = "Define 1"
+                        elif self.brand == int(0x81):
+                            self.brand = "Define 2"
+                        elif self.brand == int(0x82):
+                            self.brand = "Define 3"
+                        elif self.brand == int(0x83):
+                            self.brand = "Define 4"
+                        elif self.brand == int(0x84):
+                            self.brand = "Define 5"
+                        elif self.brand == int(0x85):
+                            self.brand = "Define 6"
+                        else:
+                            print("Invalid Brand!")
+                            return
+                        print(self.__get_now_string(), "GetBrand Responsed")
+                        return self.brand
+                    elif isinstance(cmd_struct, SetBrand):
+                        print(self.__get_now_string(), "SetBrand Responsed")
+
+                    elif isinstance(cmd_struct, GetAlarmVolume):
+                        self.alarm_volume = cmd_struct.alarm_volume
+                        print(self.__get_now_string(), "GetAlarmVolume Responsed")
+                        return self.alarm_volume
+                    elif isinstance(cmd_struct, SetAlarmVolume):
+                        print(self.__get_now_string(), "SetAlarmVolume Responsed")
+
+                    elif isinstance(cmd_struct, GetCurrentDrug):
+                        self.drug_index = cmd_struct.drug_index
+                        print(self.__get_now_string(), "GetCurrentDrug Responsed")
+                        return self.drug_index
+                    elif isinstance(cmd_struct, SetCurrentDrug):
+                        print(self.__get_now_string(), "SetCurrentDrug Responsed")
+
+                    elif isinstance(cmd_struct, GetAlarmSoundType):
+                        self.sound_type = cmd_struct.sound_type
+                        print(self.__get_now_string(), "GetAlarmSoundType Responsed")
+                        return self.sound_type
+                    elif isinstance(cmd_struct, SetAlarmSoundType):
+                        print(self.__get_now_string(), "SetAlarmSoundType Responsed")
+
+                    elif isinstance(cmd_struct, GetAlarmName):
+                        self.alarm_index = cmd_struct.alarm_index
+                        self.alarm_level = cmd_struct.alarm_level
+                        self.alarm_name_length = cmd_struct.alarm_name_length
+                        self.alarm_name_buffer = cmd_struct.alarm_name_buffer
+                        # print(self.alarm_index)
+                        # print(self.alarm_level)
+                        # print(self.alarm_name_length)
+                        # print(self.alarm_name_buffer)
+                        gan_list = []
+                        for i in range(0, len(self.alarm_name_buffer)):
+                            gan_list.append(self.alarm_name_buffer[i])
+                            self.alarm_name = bytes(gan_list).decode("utf-8")
+                        return self.alarm_name
+
+                    elif isinstance(cmd_struct, GetDateTime):
+                        self.year = cmd_struct.year
+                        self.month = cmd_struct.month
+                        self.day = cmd_struct.day
+                        self.hour = cmd_struct.hour
+                        self.minute = cmd_struct.minute
+                        self.second = cmd_struct.second
+                        print(self.__get_now_string(), self.year, self.month, self.day, self.hour, self.minute,
+                              self.second, "GetDateTime Responsed")
+                        return self.year, self.month, self.day, self.hour, self.minute, self.second
+                    elif isinstance(cmd_struct, SetDateTime):
+                        print(self.__get_now_string(), "SetDateTime Responsed")
+
+                    elif isinstance(cmd_struct, GetBrightness):
+                        self.brightness = cmd_struct.brightness
+                        print(self.__get_now_string(), "GetBrightness Responsed")
+                        return self.brightness
+                    elif isinstance(cmd_struct, SetBrightness):
+                        print(self.__get_now_string(), "SetBrightness Responsed")
+
+                    elif isinstance(cmd_struct, GetNightModePeriod):
+                        self.begin_hour = cmd_struct.begin_hour
+                        self.begin_minute = cmd_struct.begin_minute
+                        self.end_hour = cmd_struct.end_hour
+                        self.end_minute = cmd_struct.end_minute
+                        print(self.__get_now_string(), "GetNightModePeriod Responsed")
+                        return self.begin_hour, self.begin_minute, self.end_hour, self.end_minute
+                    elif isinstance(cmd_struct, SetNightModePeriod):
+                        print(self.__get_now_string(), "SetNightModePeriod Responsed")
+
+                    elif isinstance(cmd_struct, GetNightModeAlarmVolume):
+                        self.alarm_volume = cmd_struct.alarm_volume
+                        print(self.__get_now_string(), "GetNightModeAlarmVolume Responsed")
+                        return self.alarm_volume
+                    elif isinstance(cmd_struct, SetNightModeAlarmVolume):
+                        print(self.__get_now_string(), "SetNightModeAlarmVolume Responsed")
+
+                    elif isinstance(cmd_struct, GetNightModeBrightness):
+                        self.brightness = cmd_struct.brightness
+                        print(self.__get_now_string(), "GetNightModeBrightness Responsed")
+                        return self.brightness
+                    elif isinstance(cmd_struct, SetNightModeBrightness):
+                        print(self.__get_now_string(), "SetNightModeBrightness Responsed")
+
+                    elif isinstance(cmd_struct, GetSecuritySwitch):
+                        self.switch_status = cmd_struct.switch_status
+                        print(self.__get_now_string(), "GetSecuritySwitch Responsed")
+                        if self.switch_status == 0x00:
+                            self.switch_status = "Off"
+                        elif self.switch_status == 64 or 32 or 2 or 1:
+                            self.switch_status = "On"
+                        return self.switch_status
+                    elif isinstance(cmd_struct, SetSecuritySwitch):
+                        print(self.__get_now_string(), "SetSecuritySwitch Responsed")
+
+                    elif isinstance(cmd_struct, ClearHistoryLog):
+                        print(self.__get_now_string(), "ClearHistoryLog Responsed")
+
+                    elif isinstance(cmd_struct, GetMaintenancePeriod):
+                        self.maintenance_period = cmd_struct.maintenance_period
+                        print(self.__get_now_string(), "GetMaintenancePeriod Responsed")
+                        return self.maintenance_period
+
+                    elif isinstance(cmd_struct, GetMaintenanceDateTime):
+                        self.last_maintenance_year = cmd_struct.last_maintenance_year
+                        self.last_maintenance_month = cmd_struct.last_maintenance_month
+                        self.last_maintenance_day = cmd_struct.last_maintenance_day
+                        self.last_maintenance_hour = cmd_struct.last_maintenance_hour
+                        self.last_maintenance_minute = cmd_struct.last_maintenance_minute
+                        self.last_maintenance_second = cmd_struct.last_maintenance_second
+
+                        self.next_maintenance_year = cmd_struct.next_maintenance_year
+                        self.next_maintenance_month = cmd_struct.next_maintenance_month
+                        self.next_maintenance_day = cmd_struct.next_maintenance_day
+                        self.next_maintenance_hour = cmd_struct.next_maintenance_hour
+                        self.next_maintenance_minute = cmd_struct.next_maintenance_minute
+                        self.next_maintenance_second = cmd_struct.next_maintenance_second
+                        print(self.__get_now_string(), "GetMaintenanceDateTime Responsed")
+                        return self.last_maintenance_year, self.last_maintenance_month, self.last_maintenance_day, self.last_maintenance_hour, self.last_maintenance_minute, self.last_maintenance_second, self.next_maintenance_year, self.next_maintenance_month, self.next_maintenance_day, self.next_maintenance_hour, self.next_maintenance_minute, self.next_maintenance_second
+
+                    elif isinstance(cmd_struct, GetSerialNumber):
+                        self.serial_num_length = cmd_struct.serial_num_length
+                        self.serial_number_buffer = cmd_struct.serial_number_buffer
+                        gsn_list = []
+                        for i in range(0, len(self.serial_number_buffer)):
+                            gsn_list.append(self.serial_number_buffer[i])
+                            self.serial_number = bytes(gsn_list).decode("utf-8")
+                        print(self.__get_now_string(), "GetSerialNumber Responsed")
+                        return self.serial_number
+
+                    elif isinstance(cmd_struct, GetLogTotalNum):
+                        self.log_total_number = cmd_struct.log_total_number
+                        print(self.__get_now_string(), "GetLogTotalNum Responsed")
+                        return self.log_total_number
+
+                    elif isinstance(cmd_struct, WriteLog):
+                        print(self.__get_now_string(), "WriteLog Responsed")
+
+                    elif isinstance(cmd_struct, RestoreFactorySetting):
+                        print(self.__get_now_string(), "RestoreFactorySetting Responsed")
+
+                    elif isinstance(cmd_struct, SetTubePrecisionCalibrationBrand):
+                        self.set_result = cmd_struct.set_result
+                        print(self.__get_now_string(), "SetTubePrecisionCalibrationBrand Responsed")
+                        return self.set_result
+
+                    elif isinstance(cmd_struct, SetTubePrecisionCalibrationParameter):
+                        self.sequence_number = cmd_struct.sequence_number
+                        self.set_result = cmd_struct.set_result
+                        print(self.__get_now_string(), "SetTubePrecisionCalibrationParameter Responsed")
+                        return self.sequence_number, self.set_result
+
+                    elif isinstance(cmd_struct, GetInfusionNearCompleteCriteria):
+                        self.infusion_near_complete_criteria = cmd_struct.infusion_near_complete_criteria
+                        self.parameters_for_criteria = cmd_struct.parameters_for_criteria
+                        print(self.__get_now_string(), "GetInfusionNearCompleteCriteria Responsed")
+                        if self.infusion_near_complete_criteria == 0x00:
+                            self.infusion_near_complete_criteria = "ByTime"
+                        elif self.infusion_near_complete_criteria == 0x01:
+                            self.infusion_near_complete_criteria = "ByVolume"
+                        elif self.infusion_near_complete_criteria == 0x02:
+                            self.infusion_near_complete_criteria = "Off"
+                        return self.infusion_near_complete_criteria, self.parameters_for_criteria
+                    elif isinstance(cmd_struct, SetInfusionNearCompleteCriteria):
+                        print(self.__get_now_string(), "SetInfusionNearCompleteCriteria Responsed")
+
+                    elif isinstance(cmd_struct, GetBubbleSensitivity):
+                        self.air_detection_option = cmd_struct.air_detection_option
+                        self.bubble_sensitivity = cmd_struct.bubble_sensitivity
+                        print(self.__get_now_string(), "GetBubbleSensitivity Responsed")
+                        return self.air_detection_option, self.bubble_sensitivity
+                    elif isinstance(cmd_struct, SetBubbleSensitivity):
+                        print(self.__get_now_string(), "SetBubbleSensitivity Responsed")
+
+                    elif isinstance(cmd_struct, GetOcclusionLevel):
+                        self.level = cmd_struct.level
+                        print(self.__get_now_string(), "GetOcclusionLevel Responsed")
+                        return self.level
+                    elif isinstance(cmd_struct, SetOcclusionLevel):
+                        print(self.__get_now_string(), "SetOcclusionLevel Responsed")
+
+                    elif isinstance(cmd_struct, GetFactoryFirmwareVersion):
+                        self.firmware_type = cmd_struct.firmware_type
+                        self.major_version = cmd_struct.major_version
+                        self.minor_version = cmd_struct.minor_version
+                        self.revision_version = cmd_struct.revision_version
+                        self.build_number = cmd_struct.build_number
+                        print(self.__get_now_string(), "GetFactoryFirmwareVersion Responsed")
+                        return self.firmware_type, self.major_version, self.minor_version, self.revision_version, self.build_number
+
+                    elif isinstance(cmd_struct, GetSensorStatus):
+                        self.sensor_status = cmd_struct.sensor_status
+                        print(self.__get_now_string(), "GetSensorStatus Responsed")
+                        return self.sensor_status
+
+                    elif isinstance(cmd_struct, GetLogItem):
+                        self.sequence_num = cmd_struct.sequence_num
+                        self.timestamp = cmd_struct.timestamp
+                        self.summaryLength = cmd_struct.summaryLength
+                        self.summary = cmd_struct.summary
+                        self.detailLength = cmd_struct.detailLength
+                        self.admin_detail = cmd_struct.admin_detail
+                        gli_list = []
+                        gli_list2 = []
+                        for i in range(0, len(self.summary)):
+                            gli_list.append(self.summary[i])
+                            self.summary_con = bytes(gli_list).decode("utf-8")
+                        for i in range(0, len(self.admin_detail)):
+                            gli_list2.append(self.admin_detail[i])
+                            self.summary_content = bytes(gli_list2).decode("utf-8")
+                        print(self.__get_now_string(), "GetLogItem Responsed")
+                        return self.summary_content
+
+                    elif isinstance(cmd_struct, GetPumpAlarm):
+                        if cmd_struct.alarm_count <= 0:
+                            pass
+                        else:
+                            matrix = alarm_matrix()
+                            alarm_string = ""
+                            alarm_array = []
+                            for i in range(0, cmd_struct.alarm_count):
+                                if i % 2 == 1:
+                                    if cmd_struct.alarm_buffer[i] > 0:
+                                        alarm_array.append(cmd_struct.alarm_buffer[i])
+                                    alarm_string += '{0}'.format(matrix[cmd_struct.alarm_buffer[i]])
+                                    alarm_string += ','
+                            if alarm_string is not None:
+                                # 将alarm ID复制
+                                self.alarm_id = alarm_array
+                                print(self.__get_now_string(), alarm_string.strip(','))
+                                # print(self.__get_now_string(), type(alarm_string))
+                                # print(self.__get_now_string(), type(self.alarm_id))
+                            else:
+                                pass
+                        print(self.__get_now_string(), "GetPumpAlarm Response Responsed")
+                        return self.alarm_id
+
+                    elif isinstance(cmd_struct, GetFirmwareVersion):
+                        self.main_firmware_firmware_type = cmd_struct.main_firmware_firmware_type
+                        self.main_firmware_major_version = cmd_struct.main_firmware_major_version
+                        self.main_firmware_minor_version = cmd_struct.main_firmware_minor_version
+                        self.main_firmware_revision_version = cmd_struct.main_firmware_revision_version
+                        self.main_firmware_build_number = cmd_struct.main_firmware_build_number
+
+                        self.ui_firmware_firmware_type = cmd_struct.ui_firmware_firmware_type
+                        self.ui_firmware_major_version = cmd_struct.ui_firmware_major_version
+                        self.ui_firmware_minor_version = cmd_struct.ui_firmware_minor_version
+                        self.ui_firmware_revision_version = cmd_struct.ui_firmware_revision_version
+                        self.ui_firmware_build_number = cmd_struct.ui_firmware_build_number
+
+                        self.main_bootloader_firmware_type = cmd_struct.main_bootloader_firmware_type
+                        self.main_bootloader_major_version = cmd_struct.main_bootloader_major_version
+                        self.main_bootloader_minor_version = cmd_struct.main_bootloader_minor_version
+                        self.main_bootloader_revision_version = cmd_struct.main_bootloader_revision_version
+                        self.main_bootloader_build_number = cmd_struct.main_bootloader_build_number
+
+                        self.ui_bootloader_firmware_type = cmd_struct.ui_bootloader_firmware_type
+                        self.ui_bootloader_major_version = cmd_struct.ui_bootloader_major_version
+                        self.ui_bootloader_minor_version = cmd_struct.ui_bootloader_minor_version
+                        self.ui_bootloader_revision_version = cmd_struct.ui_bootloader_revision_version
+                        self.ui_bootloader_build_number = cmd_struct.ui_bootloader_build_number
+
+                        self.safety_firmware_firmware_type = cmd_struct.safety_firmware_firmware_type
+                        self.safety_firmware_major_version = cmd_struct.safety_firmware_major_version
+                        self.safety_firmware_minor_version = cmd_struct.safety_firmware_minor_version
+                        self.safety_firmware_revision_version = cmd_struct.safety_firmware_revision_version
+                        self.safety_firmware_build_number = cmd_struct.safety_firmware_build_number
+
+                        self.safety_bootloader_firmware_firmware_type = cmd_struct.safety_bootloader_firmware_firmware_type
+                        self.safety_bootloader_firmware_major_version = cmd_struct.safety_bootloader_firmware_major_version
+                        self.safety_bootloader_firmware_minor_version = cmd_struct.safety_bootloader_firmware_minor_version
+                        self.safety_bootloader_firmware_revision_version = cmd_struct.safety_bootloader_firmware_revision_version
+                        self.safety_bootloader_firmware_build_number = cmd_struct.safety_bootloader_firmware_build_number
+
+                        # print(self.main_firmware_firmware_type)
+                        # print(self.main_firmware_major_version)
+                        # print(self.main_firmware_minor_version)
+                        # print(self.main_firmware_revision_version)
+                        # print(self.main_firmware_build_number)
+                        #
+                        # print(self.ui_firmware_firmware_type)
+                        # print(self.ui_firmware_major_version)
+                        # print(self.ui_firmware_minor_version)
+                        # print(self.ui_firmware_revision_version)
+                        # print(self.ui_firmware_build_number)
+                        #
+                        # print(self.main_bootloader_firmware_type)
+                        # print(self.main_bootloader_major_version)
+                        # print(self.main_bootloader_minor_version)
+                        # print(self.main_bootloader_revision_version)
+                        # print(self.main_bootloader_build_number)
+                        #
+                        # print(self.ui_bootloader_firmware_type)
+                        # print(self.ui_bootloader_major_version)
+                        # print(self.ui_bootloader_minor_version)
+                        # print(self.ui_bootloader_revision_version)
+                        # print(self.ui_bootloader_build_number)
+                        #
+                        # print(self.safety_firmware_firmware_type)
+                        # print(self.safety_firmware_major_version)
+                        # print(self.safety_firmware_minor_version)
+                        # print(self.safety_firmware_revision_version)
+                        # print(self.safety_firmware_build_number)
+                        #
+                        # print(self.safety_bootloader_firmware_firmware_type)
+                        # print(self.safety_bootloader_firmware_major_version)
+                        # print(self.safety_bootloader_firmware_minor_version)
+                        # print(self.safety_bootloader_firmware_revision_version)
+                        # print(self.safety_bootloader_firmware_build_number)
+
+                        print(self.__get_now_string(), "GetFirmwareVersion Responsed")
+                        return 0
+
+                    elif isinstance(cmd_struct, RemoteStartPrime):
+                        print(self.__get_now_string(), "RemoteStartPrime Responsed")
+
+                    elif isinstance(cmd_struct, RemoteStartBolus):
+                        print(self.__get_now_string(), "RemoteStartBolus Responsed")
+
+                    elif isinstance(cmd_struct, RemoteSetBolusParameter):
+                        print(self.__get_now_string(), "RemoteSetBolusParameter Responsed")
+
+                    # elif isinstance(cmd_struct, VerifyPasscode):
+                    #     self.screen_type = cmd_struct.screen_type
+                    #     self.verified_result = cmd_struct.verified_result
+                    #     print(self.__get_now_string(), "VerifyPasscode Responsed")
+                    #     return self.screen_type, self.verified_result
+
+                    else:
+                        print("Command is not responsed!")
+                        return
+
+                we_response = WriteCSV(None, response_data)
+                we_response.response_write_csv()
+        except Exception as e:
+            print("Receiving error: %s" % e)
+
+    # def __make_sequence_id(self):
+    #     self.sequence_id = (self.sequence_id+1)%256
+    #     return self.sequence_id
+
+    # def __binary_to_hex_string(self, buffer):
+    #     hex_string = []
+    #     if buffer is None:
+    #         print("buffer is None")
+    #         return
+    #     for i in range(len(buffer)):
+    #         hex_string.append(hex(buffer[i]))
+    #     print(hex_string)

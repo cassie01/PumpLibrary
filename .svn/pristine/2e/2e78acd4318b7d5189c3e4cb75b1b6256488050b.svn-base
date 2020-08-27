@@ -1,0 +1,343 @@
+from TestCase import *
+
+
+class TestFreeTest(unittest.TestCase):
+    """
+    FreeTest test cases
+    """
+
+    """
+    Part 1
+    1.输注设置---选择管路品牌A；
+    2.基本模式，设置任意有效参数；
+    3.启动输注，获取输注中界面的管路品牌B；
+    4.停止输注。
+    获取管路品牌A与B一致。
+    """
+
+    def test_part1(self):
+        A = "Weigao"
+        lvp.set_brand(A)
+        assert lvp.get_brand() == A
+        lvp.set_infusion_mode("basic")
+        assert lvp.get_infusion_mode() == "basic"
+        lvp.set_infusion_parameter(200, 0, 100)
+        lvp.start_infusion()
+        time.sleep(5)
+        B = lvp.get_brand()
+        time.sleep(5)
+        lvp.stop_infusion()
+        assert A == B
+        log.logger.info("end")
+
+    """
+    Part 2
+    1.仅设置速率参数为A，启动输注；
+    2.输注中修改速率参数为B，保存继续以B输注；
+    3.修改速率参数为C，保存继续以C输注；
+    4.停止输注。
+    获取输注中界面的速率参数，分别为A-B-C-C。
+    """
+
+    def part2(self):
+        A = 100
+        lvp.set_infusion_parameter(A, 0, 0)
+        lvp.start_infusion()
+        # TODO 输注中修改参数
+        lvp.stop_infusion()
+
+    """
+    Part 3
+    1.累计量清零；
+    2.设置任意有效参数，启动输注（设置中速率即可）；
+    3.获取当前输注中界面累计量为A；
+    4.切换至快速输注界面，然后退出；
+    5.再次获取输注中界面累计量为B；
+    6.停止输注。
+    获取的累计量A与B差值不会太大。
+    """
+
+    def part3(self):
+        # TODO 累计量清零
+        lvp.set_infusion_parameter(80, 0, 100)
+        lvp.start_infusion()
+        # TODO 获取累计量
+        lvp.start_bolus()
+        time.sleep(10)
+        lvp.stop_bolus()
+        lvp.stop_infusion()
+
+    """
+    Part 4
+    1.分别设置速率A，输液量B和时间参数C；
+    2.切换界面（菜单界面/排气界面/待机模式界面）；
+    3.再返回至主界面，检查界面参数。
+    获取的速率、输液量、时间参数仍为A,B,C。
+    """
+
+    def part4(self):
+        A = 100
+        B = 3600
+        C = 100
+        lvp.set_infusion_parameter(A, B, C)
+        lvp.start_bolus()
+        lvp.stop_prime()
+        # TODO 获取速率，输液量，时间
+
+    """
+    Part 5
+    1.累计量清零，设置速率，输液量，时间参数C（大于5分钟），启动输注；
+    2.获取累计量A；
+    3.进行快速输注1分钟，然后停止快速输注，返回输注中界面；
+    4.获取累计量B和剩余时间D。
+    累计量B大于累计量A（差值视速率而定）；剩余时间D小于时间C（差值另计算）。
+    """
+
+    def part5(self):
+        # TODO 累计量清零
+        A = 6
+        B = 600
+        C = 1
+        lvp.set_infusion_parameter(A, B, C)
+        lvp.start_infusion()
+        # TODO 获取累计量
+        lvp.start_bolus()
+        time.sleep(60)
+        lvp.stop_bolus()
+        # TODO 获取剩余时间
+
+    """
+    Part 6
+    1.获取主界面累计量A（非零）；
+    2.切换界面（菜单界面/排气界面），返回；
+    3.获取累计量B。
+    获取的累计量A与B一致。
+    """
+
+    def part6(self):
+        # TODO 获取主界面累计量
+        lvp.start_bolus()
+        lvp.stop_prime()
+
+    """
+    Part 7
+    1.设置屏幕亮度为A；
+    2.设置夜间模式时间段，确保当前泵端时间在夜间模式时间段内；
+    3.设置夜间模式屏幕亮度B，确保B远远小于A，开启夜间模式。
+    夜间模式状态下，获取当前屏幕亮度为B。
+    """
+
+    def part7(self):
+        A = 7
+        lvp.set_brightness(A)
+        current_time_hour = lvp.get_date_time()[3]
+        lvp.set_night_mode_period(current_time_hour, 0, current_time_hour - 12, 0)
+        B = 2
+        lvp.set_night_mode_brightness(B)
+        lvp.set_night_mode_switch_status("On")
+        assert lvp.get_brightness() == B
+
+    """
+    Part 8
+    1.获取累计量A；
+    2.执行排气操作，使排气量达到最大值6mL后停止；
+    3.获取累计量B。
+    获取的累计量A与B数值一致。
+    """
+
+    def part8(self):
+        # TODO 获取累计量
+        lvp.start_bolus()
+        lvp.start_prime()
+        time.sleep(6 / 1200 * 3600)
+        lvp.stop_prime()
+
+    """
+    Part 9
+    1.设置速率1.5mL/h，输液量24mL，时间自动计算；
+    2.开始输注；
+    3.直到自动输注完成。	获取时间参数为16h；
+    输注完成报警触发，无异常。
+    """
+
+    def part9(self):
+        rate = 1.5
+        vtbi = 24
+        lvp.set_infusion_parameter(rate, 0, vtbi)
+        lvp.start_infusion()
+        # TODO 获取时间参数
+        time.sleep(24 / 1.5 * 3600)
+        alarm_id = lvp.get_pump_alarm()
+        assert 23 in alarm_id
+        alarm_id.clear()
+        lvp.stop_infusion()
+
+    """
+    Part 10
+    1.仅设置速率参数；
+    2.输注一段时间后触发高优先级报警；
+    3.停止后返回主界面；
+    4.再次重新开始输注；
+    5.停止输注。
+    可以重新开始输注，无异常。
+    """
+
+    def part10(self):
+        rate = 20
+        lvp.set_infusion_parameter(rate, 0, 0)
+        lvp.start_infusion()
+        time.sleep(60)
+        # TODO 触发高优先级报警
+        lvp.stop_infusion()
+        lvp.start_infusion()
+        time.sleep(60)
+        lvp.stop_infusion()
+
+    """
+    Part 11
+    1.先设置时间参数，再设置输液量参数，速率自动计算；
+    2.开始输注；
+    3.停止输注。
+    正常启动输注。
+    """
+
+    def part11(self):
+        duration = 3600
+        vtbi = 100
+        lvp.set_infusion_parameter(0, duration, vtbi)
+        lvp.start_infusion()
+        time.sleep(60)
+        lvp.stop_infusion()
+
+    """
+    Part 12
+    1.设置速率10mL/h，时间1h，启动输注；
+    2.进入快速输注，然后返回；
+    3.获取输注中界面速率参数A，然后停止输注。
+    获取的速率参数A值为10。
+    """
+
+    def part12(self):
+        rate = 10
+        duration = 3600
+        lvp.set_infusion_parameter(rate, duration, 0)
+        lvp.start_infusion()
+        lvp.start_bolus()
+        time.sleep(5)
+        lvp.stop_bolus()
+        # TODO 获取输注界面速率参数
+        lvp.stop_infusion()
+
+    """
+    Part 13	
+    1.设置KVO值为10；
+    2.设置速率，时间参数，启动输注；
+    3.等待输注完成进入KVO，获取马达状态；
+    4.停止输注。
+    马达状态为转动。
+    """
+
+    def part13(self):
+        kvo = 10
+        rate = 20
+        duration = 3600
+        lvp.set_kvo(kvo)
+        lvp.set_infusion_parameter(rate, duration, 0)
+        lvp.start_infusion()
+        time.sleep(3600)
+        # TODO 获取进入KVO状态后的马达状态
+
+    """
+    Part 14
+    1.设置即将输注完成报警为输液量5mL,排气，使排气量达到最大6mL；
+    2.全参数设置，启动输注；
+    3.执行Bolus操作;
+    4.等待触发即将输注完成和输注完成报警，停止输注。
+    输注正常。
+    """
+
+    def part14(self):
+        rate = 100
+        duration = 3600
+        vtbi = 100
+        lvp.set_infusion_near_complete_criteria("ByVolume", 5)
+        lvp.start_bolus()
+        lvp.start_prime()
+        time.sleep(6 / 1200 * 3600)
+        lvp.stop_prime()
+        lvp.set_infusion_parameter(rate, duration, vtbi)
+        lvp.start_infusion()
+        time.sleep(6)
+        lvp.start_bolus()
+        time.sleep(6)
+        lvp.stop_bolus()
+        time.sleep(duration)
+        alarm_id = lvp.get_pump_alarm()
+        assert 23 in alarm_id
+        alarm_id.clear()
+        lvp.stop_infusion()
+
+    """
+    Part 15
+    1.安全设置--即将输注完成--输液量--15；
+    2.设置速率1200，输液量1，等待输注完成进入KVO，然后停止输注；
+    3.重新开始输注，仅速率1200运行，停止输注。
+    重新开始输注时，无异常即将输注完成报警发生，获取Alarm为空。
+    """
+
+    def part15(self):
+        rate = 1200
+        vtbi = 1
+        lvp.set_infusion_near_complete_criteria("ByVolume", 15)
+        lvp.set_infusion_parameter(rate, 0, vtbi)
+        lvp.start_infusion()
+        time.sleep(1 / 1200 * 3600)
+        lvp.stop_infusion()
+        lvp.set_infusion_parameter(rate, 0, 0)
+        lvp.start_infusion()
+        time.sleep(10)
+        alarm_id = lvp.get_pump_alarm()
+        assert alarm_id == []
+        lvp.stop_infusion()
+
+    """
+    Part 16
+    1.进行排气操作；
+    2.仅设置速率参数，启动输注；
+    3.触发门打开报警。
+    4.停止输注。
+    获取报警ID，为门打开；
+    获取马达状态为停止。
+    """
+
+    def part16(self):
+        lvp.start_bolus()
+        lvp.start_prime()
+        time.sleep(6 / 1200 * 3600)
+        lvp.stop_prime()
+        rate = 20
+        lvp.set_infusion_parameter(rate, 0, 0)
+        lvp.start_infusion()
+        # TODO 触发门打开报警
+        lvp.stop_infusion()
+
+    """
+    Part 17
+    1.不安装管路；
+    2.设置速率参数，启动输注；
+    3.停止输注。
+    获取AlarmID，无法正常输注运行。
+    """
+
+    def part17(self):
+        rate = 20
+        lvp.set_infusion_parameter(rate, 0, 0)
+        lvp.start_infusion()
+        alarm_id = lvp.get_pump_alarm()
+        assert 26 in alarm_id
+        alarm_id.clear()
+
+
+if __name__ == '__main__':
+    pass
+

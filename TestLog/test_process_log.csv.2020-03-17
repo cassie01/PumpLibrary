@@ -1,0 +1,4 @@
+2020-03-17 14:14:58,035 - C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\TestCase\ClinicScenario\test_ClinicScenario_part_001.py[line:53] - INFO: This test is started!
+2020-03-17 14:14:58,796 - C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\TestCase\ClinicScenario\test_ClinicScenario_part_001.py[line:55] - INFO: The current system status is SystemStatus.EStopStatus!
+2020-03-17 14:15:00,299 - C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\TestCase\ClinicScenario\test_ClinicScenario_part_001.py[line:61] - INFO: The current infusion mode is basic!
+2020-03-17 14:15:03,532 - C:\Users\MSHALWang\Desktop\Workspace\C9LVPProject\PumpLibrary\TestCase\ClinicScenario\test_ClinicScenario_part_001.py[line:69] - INFO: The current system status is SystemStatus.EStopStatus before priming!

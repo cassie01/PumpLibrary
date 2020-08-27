@@ -1,0 +1,123 @@
+# -*-coding:utf-8 -*-
+
+# *****************************
+# COPYRIGHT 2019 Smiths Medical.
+# Created Date: 2019-11
+# Author: Li Wang
+# Description: This library is used for test automation on pump, including C9 Syringe and C9 LVP pump.
+# *****************************
+import os
+import sys
+current_dir = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(current_dir)
+sys.path.append("..")
+
+from PumpLibrary.Keywords import *
+from version import VERSION
+from SerialDevice.pump_connect import *
+from ParserProtocol.protocol_invoker import *
+from global_attributes import setCommandFormat
+
+
+class PumpLibrary(
+    Info,
+    Infusion,
+    InfusionParameter,
+    DeviceReport,
+    HistoryLog,
+    InfusionSetting,
+    Maintenance,
+    SafetySetting,
+    SystemSetting,
+    Alarm,
+    Bolus,
+    Priming,
+    Motor,
+    Sensor,
+):
+    ROBOT_LIBRARY_SCOPE = "GLOBAL"
+    ROBOT_LIBRARY_VERSION = VERSION
+
+    def __init__(self):
+        for base in PumpLibrary.__bases__:
+            base.__init__(self)
+        self.commandFormat = "Protocol"
+        self.parser_invoker = None
+        self.sequence_id = 0
+        self.port = None
+        self.connectObj = None
+        self.product_id = PRODUCT_ID
+        setCommandFormat(self.commandFormat)
+        self.dllParser(lvp_project_dll_path)
+
+    def buildConnect(self, pump, connect_way):
+        """
+        Build connection with pump, decide connection object and way.
+        Two connection objects are provided now: C9LVP,C9
+        Three connection ways are provided now: COM, IO, Ethernet
+        :param pump: the pump, such as C9LVP and C9
+        :param connect_way: the connect way, such as com or ethernet.
+        :return: None
+        Examples:
+        | Build Connect | C9LVP | COM |
+        """
+        self.connectObj = PumpConnect(pump, connect_way).connect()
+
+    def setCommandFormat(self, command_format):
+        """
+        Set request command format
+        Two ways are provided now: String and Hex, the default is String.
+        :param command_format: command format, such as string command or dll commands.
+        :return: None
+        Examples:
+        | Decide Send Way | Pump |
+        """
+        self.commandFormat = command_format
+        setCommandFormat(self.commandFormat)
+
+    def breakConnect(self):
+        """
+        Break the serial connection.
+        :return: None
+        """
+        self.connectObj.close()
+
+    def dllParser(self, dll_path=r'.\ProtocolParser\ProtocolParser_x64.dll'):
+        """
+        Choose the protocol file.
+        :param path: The absolute path of the file.
+        :return: None
+        """
+        if os.path.exists(dll_path):
+            self.parser_invoker = ProtocolParserInvoker(dll_path)
+            print(self.parser_invoker.get_infusion_mode_command_bytes(1, 2))
+        else:
+            print("Error, Wrong Dll File.")
+
+        return self.parser_invoker
+
+    def productID(self, product_id):
+        """
+        Choose the product id to use in dll.
+        :param product_id:
+                            Graseby™ C9: 0x01
+                            Graseby™ C9LVP:	0x02
+        :return:None
+        """
+        self.product_id = product_id
+
+
+if __name__ == "__main__":
+    lvp = PumpLibrary()
+    lvp.buildConnect("C9LVP", "COM")
+    lvp.setCommandFormat("Hex")
+    lvp.productID(0x02)
+
+    """
+    
+    """
+    print("--" * 50)
+
+    lvp.start_infusion()
+
+    print("--" * 50)

@@ -1,0 +1,79 @@
+"""
+3.2.1 测试范围
+本章节主要验证基本输注模式的以下范围：
+1.参数范围设置检查；
+2.输注过程中的按键、提示信息、修改参数；
+4.触发报警时的按键响应等。
+3.2.2 前期设置
+除以下步骤中特殊说明，确保泵连接AC电源以及处于开机状态，将输液管安装在泵端，门关闭。
+3.2.3 测试步骤
+3.2.3.1 基本模式
+3.2.3.1.1 功能配置
+进入菜单下的输注设置，设置输注模式为基本模式。
+设置延时输注功能为开，并且打开KVO速率运行。
+设置药物库功能为开。
+返回菜单界面进入安全设置，设置运行时编辑参数功能为开。
+设置即将输注完成报警的触发条件为时间，剩时间参数设置为3min。
+设置按键锁功能为开。
+3.2.3.1.2 输注运行
+3.2.3.1.2.1 仅设置速率
+基本模式主界面，正确安装管路，设置如下参数：
+1.仅设置速率，确保速率超范围（Rate<0.10mL/h）
+2.延时输注时间不设置
+3.设置任意药物
+按开始/停止键。
+
+"""
+
+from TestCase import *
+
+infusion_mode = "basic"
+switch_status = "On"
+kvo = 5
+infusion_near_complete_criteria = "ByTime"
+parameters_for_criteria = 50
+rate = 1200
+infusion_time = 0
+vtbi = 0
+invalid_rate = 0.09
+invalid_time = 0
+invalid_vtbi = 0
+
+
+def task1():
+
+    lvp.set_infusion_mode(infusion_mode)
+    assert lvp.get_infusion_mode() == infusion_mode
+    lvp.set_delayed_start_switch_status(switch_status)
+    assert lvp.get_delayed_start_switch_status() == switch_status
+    lvp.set_kvo(kvo)
+    assert lvp.get_kvo() == kvo
+    lvp.set_drug_library_switch_status(switch_status)
+    assert lvp.get_drug_library_switch_status() == switch_status
+    lvp.set_edit_rate_at_run_time_switch_status(switch_status)
+    assert lvp.get_edit_rate_at_run_time_switch_status() == switch_status
+
+    lvp.set_infusion_near_complete_criteria(infusion_near_complete_criteria, parameters_for_criteria)
+    assert lvp.get_infusion_near_complete_criteria() == (infusion_near_complete_criteria, parameters_for_criteria)
+    lvp.set_keypad_lock_switch_status(switch_status)
+    assert lvp.get_keypad_lock_switch_status() == switch_status
+
+    lvp.set_infusion_parameter(invalid_rate, invalid_time, invalid_vtbi)
+    time.sleep(1)
+    lvp.start_infusion()
+    alarm_id = lvp.get_pump_alarm()
+    if 1 in alarm_id:
+        assert True
+        alarm_id.clear()
+    else:
+        return
+
+    time.sleep(1)
+    lvp.set_infusion_parameter(rate, infusion_time, vtbi)
+    lvp.start_infusion()
+    current_system_status = lvp.get_system_status()
+    assert current_system_status == SystemStatus.ERunStatus
+
+
+if __name__ == '__main__':
+    task1()
